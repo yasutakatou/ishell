@@ -9,7 +9,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -268,7 +267,10 @@ func (s *Shell) handleCommand(str []string) (bool, error) {
 	}
 	cmd, args := s.rootCmd.FindCmd(str)
 	if cmd == nil {
-		return false, nil
+		//return false, nil
+		rstr := []string{"default"}
+		rstr = append(rstr, str...)
+		cmd, args = s.rootCmd.FindCmd(rstr)
 	}
 	// trigger help if func is not registered or auto help is true
 	if cmd.Func == nil || (s.autoHelp && len(args) == 1 && args[0] == "help") {
@@ -428,21 +430,10 @@ func (s *Shell) SetHistoryPath(path string) {
 // SetHomeHistoryPath is a convenience method that sets the history path
 // in user's home directory.
 func (s *Shell) SetHomeHistoryPath(path string) {
-	var home string
-
-	// Try to get the home directory with user.Current.
-	// If error occurs, use environment variables
-	user, err := user.Current()
-	if err == nil {
-		home = user.HomeDir
-	} else {
-		if runtime.GOOS == "windows" {
-			home = os.Getenv("USERPROFILE")
-		} else {
-			home = os.Getenv("HOME")
-		}
+	home := os.Getenv("HOME")
+	if runtime.GOOS == "windows" {
+		home = os.Getenv("USERPROFILE")
 	}
-
 	abspath := filepath.Join(home, path)
 	s.SetHistoryPath(abspath)
 }
@@ -701,6 +692,9 @@ func getPosition() (int, int, error) {
 	fmt.Printf("\033[6n")
 	var out string
 	reader := bufio.NewReader(os.Stdin)
+	if err != nil {
+		return 0, 0, err
+	}
 	for {
 		b, err := reader.ReadByte()
 		if err != nil || b == 'R' {
