@@ -364,6 +364,13 @@ func (s *Shell) initCompleters() {
 	s.setCompleter(iCompleter{cmd: s.rootCmd, disabled: func() bool { return s.multiChoiceActive }})
 }
 
+func (s *Shell) AddCompleters(strs []string) {
+	for i := 0; i < len(strs); i++ {
+		s.rootCmd.AddCmd(&Cmd{Name: strs[i]})
+	}
+	s.setCompleter(iCompleter{cmd: s.rootCmd, disabled: func() bool { return s.multiChoiceActive }})
+}
+
 func (s *Shell) setCompleter(completer readline.AutoCompleter) {
 	config := s.reader.scanner.Config.Clone()
 	config.AutoComplete = completer
