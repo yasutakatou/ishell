@@ -1,6 +1,15 @@
 # ishell
 ishell is an interactive shell library for creating interactive cli applications.
 
+<hr>
+note:
+
+this fork added following functions.
+ - when not found command, is default to do.
+ - AddCompleters function is adding completer by []string.
+
+<hr>
+ 
 [![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/abiosoft/ishell)
 [![Go Report Card](https://goreportcard.com/badge/github.com/abiosoft/ishell)](https://goreportcard.com/report/github.com/abiosoft/ishell)
 
